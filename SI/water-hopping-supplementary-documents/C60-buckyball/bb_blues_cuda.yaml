@@ -1,0 +1,96 @@
+output_dir: .
+#output_dir: /oasis/tscc/scratch/bergazin/water
+outfname: bb_NVT_MD
+logger_level: info #critical, error, warning, info, debug
+
+structure:
+  filename: C60_out.prmtop
+  xyz: C60_out.inpcrd
+  #restart: C60_out_NVT_MD.rst7
+
+system:
+  nonbondedMethod: PME
+  nonbondedCutoff: 10 * angstroms
+  constraints: HBonds
+  rigidWater: True
+  removeCMMotion: True
+  hydrogenMass: 3.024 * daltons
+  ewaldErrorTolerance: 0.005
+  flexibleConstraints: True
+  splitDihedrals: False
+
+  alchemical:
+    softcore_alpha: 0.5 #Default: 0.5
+    softcore_a : 1
+    softcore_b : 1
+    softcore_c : 6 #Default: 6
+    softcore_beta : 0.0
+    softcore_d : 1
+    softcore_e : 1
+    softcore_f : 2
+    annihilate_electrostatics : True
+    annihilate_sterics : False
+
+#restraints:
+#  selection: '@CA,C,N' #:LIG
+  #  weight 62500 # 5
+
+freeze:
+  freeze_selection: ':FUL'
+
+simulation:
+  platform: CUDA
+  properties:
+    CudaPrecision: single
+    CudaDeviceIndex: 0
+    #OpenCLPrecision: single
+    #OpenCLDeviceIndex: 2
+  dt: 0.004 * picoseconds
+  friction: 1 * 1/picoseconds
+  temperature: 300 * kelvin
+  nIter: 1
+  nstepsMD: 62500 #2500000 #10000
+  #nstepsNC: 2500
+  #nprop: 5
+  prop_lambda: 0.3
+  #pressure: 1 * atmospheres
+
+md_reporters:
+  state:
+    reportInterval: 250
+  traj_netcdf:
+    reportInterval: 250
+  restart:
+    reportInterval: 1000
+    #restart: 1000
+#  progress:
+#    totalSteps: 100
+#    reportInterval: 10
+  stream:
+    title: md
+    reportInterval: 250
+    totalSteps: 1000
+    step: True
+    speed: True
+    progress: True
+    remainingTime: True
+    currentIter : True
+    volume: True
+
+ncmc_reporters:
+  traj_netcdf:
+    frame_indices: [1, 0.5, -1]
+    alchemicalLambda: True
+    protocolWork: True
+  stream:
+    title: ncmc
+    reportInterval: 100
+    totalSteps: 1000
+    step: True
+    speed: True
+    progress: True
+    remainingTime : True
+    protocolWork : True
+    alchemicalLambda : True
+    currentIter : True
+    volume: True
