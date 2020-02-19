@@ -1,3 +1,0 @@
-parm C60_out.prmtop
-trajin C60_out.inpcrd
-trajout bb.pdb pdb
